@@ -255,69 +255,30 @@
       const MAX_LINES = 100;
       const logBuffer = [];
 
-function formatArg(arg) {
-  if (typeof arg === "object" && arg !== null) {
-    try {
-      return `<pre>${escapeHTML(JSON.stringify(arg, replacer, 2))}</pre>`;
-    } catch (e) {
-      return "[Circular Object]";
-    }
-  }
-  return String(arg);
-}
+      console.log = function (...args) {
+        originalLog.apply(console, args);
 
-// Chống circular JSON
-function replacer(key, value) {
-  const seen = new WeakSet();
-  return function (key, value) {
-    if (typeof value === "object" && value !== null) {
-      if (seen.has(value)) return "[Circular]";
-      seen.add(value);
-    }
-    return value;
-  };
-}
+        const text = args
+          .map((arg) =>
+            typeof arg === "object" ? JSON.stringify(arg, null, 2) : String(arg)
+          )
+          .join(" ");
 
-// Escape để khỏi vỡ HTML
-function escapeHTML(str) {
-  return str.replace(/[&<>"']/g, function (m) {
-    return ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#039;"
-    })[m];
-  });
-}
+        // Only print console that contains "2363"
+        if (!text.includes("2363")) return;
 
-console.log = function (...args) {
-  originalLog.apply(console, args);
+        // Push log mới
+        logBuffer.push(text);
 
-  // Format từng arg
-  const formatted = args.map(formatArg).join(" ");
+        // Nếu vượt quá 100 dòng → xóa dòng cũ nhất
+        if (logBuffer.length > MAX_LINES) {
+          logBuffer.shift(); // pop đầu
+        }
 
-  // Check raw text để filter
-  const plainText = args.map(a =>
-    typeof a === "object" ? JSON.stringify(a) : String(a)
-  ).join(" ");
-
-  // Only print console that contains "2363"
-  if (!plainText.includes("2363")) return;
-
-  // Push log mới
-  logBuffer.push(formatted);
-
-  // Nếu vượt quá 100 dòng
-  if (logBuffer.length > MAX_LINES) {
-    logBuffer.shift();
-  }
-
-  // Render
-  logDiv.innerHTML = logBuffer.join("<hr>");
-  logDiv.scrollTop = logDiv.scrollHeight;
-};
-
+        // Render lại logDiv
+        logDiv.innerHTML = logBuffer.join("<br>");
+        logDiv.scrollTop = logDiv.scrollHeight;
+      };
 
       // Test với input của bạn
       console.log("=== START LOGGING ===");
