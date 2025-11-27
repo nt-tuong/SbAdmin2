@@ -188,6 +188,23 @@
                 padding-left: 0.15rem;
                 padding-right: 0.15rem;
             }
+
+            .mobile-log {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                max-height: 200px;
+                overflow-y: auto;
+                background: rgba(0,0,0,0.9);
+                color: #0f0;
+                font-family: monospace;
+                font-size: 12px;
+                padding: 10px;
+                z-index: 999999;
+                white-space: pre-wrap;
+                word-break: break-all;
+            }
         }
     </style>
 <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
@@ -567,6 +584,10 @@
                         </div>
                     </div>
 
+                    <hr>
+                        <div class="row" id="mobile-log"></div>
+                    <hr>
+
                     <div class="row">
 
                         <!-- Form 1 -->
@@ -896,6 +917,50 @@
 	
 	<!-- import script snippet -->
 	<script type="module" src="js/javascript.js"></script>
+
+    <script>
+      // Tạo div để hiển thị log
+      const logDiv = document.getElementById("mobile-log");
+
+      // Override console.log
+      const originalLog = console.log;
+      console.log = function (...args) {
+        originalLog.apply(console, args);
+        const text = args
+          .map((arg) =>
+            typeof arg === "object" ? JSON.stringify(arg, null, 2) : arg
+          )
+          .join(" ");
+        logDiv.innerHTML += text + "<br>";
+        logDiv.scrollTop = logDiv.scrollHeight;
+      };
+
+      // Test với input của bạn
+      const input = document.getElementById("exampleInputEmail");
+      console.log("=== START LOGGING ===");
+
+      //   [
+      //     "beforeinput",
+      //     "input",
+      //     "keydown",
+      //     "keypress",
+      //     "keyup",
+      //     "blur",
+      //     "focusout",
+      //   ].forEach((evt) => {
+      //     input.addEventListener(evt, (e) => {
+      //       console.log(`${evt}: ${e.inputType || e.key || "no-key"}`);
+      //     });
+      //   });
+      input.addEventListener("focusout", (e) => {
+        console.log("focusout - relatedTarget:", e.relatedTarget);
+        console.log("activeElement after focusout:", document.activeElement);
+
+        setTimeout(() => {
+          console.log("activeElement after 100ms:", document.activeElement);
+        }, 100);
+      });
+    </script>
 
 </body>
 
