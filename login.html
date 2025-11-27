@@ -228,6 +228,62 @@
     <!-- import script snippet -->
     <script type="module" src="js/javascript.js"></script>
 
+    <script>
+      // Tạo div để hiển thị log
+      const logDiv = document.createElement("div");
+      logDiv.id = "mobile-log";
+      logDiv.style.cssText = `
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          max-height: 200px;
+          overflow-y: auto;
+          background: rgba(0,0,0,0.9);
+          color: #0f0;
+          font-family: monospace;
+          font-size: 12px;
+          padding: 10px;
+          z-index: 999999;
+          white-space: pre-wrap;
+          word-break: break-all;
+        `;
+      document.body.appendChild(logDiv);
+
+      // Override console.log
+      const originalLog = console.log;
+      const MAX_LINES = 100;
+      const logBuffer = [];
+
+      console.log = function (...args) {
+        originalLog.apply(console, args);
+
+        const text = args
+          .map((arg) =>
+            typeof arg === "object" ? JSON.stringify(arg, null, 2) : String(arg)
+          )
+          .join(" ");
+
+        // Only print console that contains "2363"
+        if (!text.includes("2363")) return;
+
+        // Push log mới
+        logBuffer.push(text);
+
+        // Nếu vượt quá 100 dòng → xóa dòng cũ nhất
+        if (logBuffer.length > MAX_LINES) {
+          logBuffer.shift(); // pop đầu
+        }
+
+        // Render lại logDiv
+        logDiv.innerHTML = logBuffer.join("<br>");
+        logDiv.scrollTop = logDiv.scrollHeight;
+      };
+
+      // Test với input của bạn
+      console.log("=== START LOGGING ===");
+    </script>
+
     <!-- <script type="module" src="https://cdn.jsdelivr.net/gh/nt-tuong/COUIX@main/javascript.js"></script> -->
   </body>
 </html>
