@@ -284,24 +284,24 @@
         }
 
         
-        console.log(
-          `2363 >${new Date().getTime()} > h`,
-          h
-        );
-        console.log(
-          `2363 >${new Date().getTime()} > w`,
-          w
-        );
-        console.log(
-          `2363 >${new Date().getTime()} > visualViewport`,
-          window.visualViewport ? {
-            width: window.visualViewport.width,
-            height: window.visualViewport.height,
-            offsetLeft: window.visualViewport.offsetLeft,
-            offsetTop: window.visualViewport.offsetTop,
-            scale: window.visualViewport.scale
-          } : 'not supported'
-        );
+        // console.log(
+        //   `2363 >${new Date().getTime()} > h`,
+        //   h
+        // );
+        // console.log(
+        //   `2363 >${new Date().getTime()} > w`,
+        //   w
+        // );
+        // console.log(
+        //   `2363 >${new Date().getTime()} > visualViewport`,
+        //   window.visualViewport ? {
+        //     width: window.visualViewport.width,
+        //     height: window.visualViewport.height,
+        //     offsetLeft: window.visualViewport.offsetLeft,
+        //     offsetTop: window.visualViewport.offsetTop,
+        //     scale: window.visualViewport.scale
+        //   } : 'not supported'
+        // );
 
         const {
           topLeft = 0,
@@ -367,7 +367,7 @@
 
         let timeoutId = undefined;
         const rafLoop = () => {
-          timeoutId = undefined;
+          // timeoutId = undefined;
 
           const isElementInDOM = document.contains(targetElement);
 
@@ -388,7 +388,8 @@
           );
           makeOverlayPath(path, openingProperties);
           // Chạy khoảng 1.5 giây/lần (1500ms delay)
-          timeoutId = setTimeout(rafLoop, 1500);
+          // timeoutId = setTimeout(rafLoop, 1500);
+          rafId = requestAnimationFrame(rafLoop);
         };
 
         rafLoop();
@@ -505,18 +506,18 @@
           }
           // Android: visualViewport không có hoặc offset = 0, nên không cần điều chỉnh
 
-          console.log(
-            `2363 >${new Date().getTime()} > overlayX (after adjustment)`,
-            overlayX
-          );
-          console.log(
-            `2363 >${new Date().getTime()} > visualViewportOffsetLeft`,
-            visualViewportOffsetLeft
-          );
-          console.log(
-            `2363 >${new Date().getTime()} > visualViewportOffsetTop`,
-            visualViewportOffsetTop
-          );
+          // console.log(
+          //   `2363 >${new Date().getTime()} > overlayX (after adjustment)`,
+          //   overlayX
+          // );
+          // console.log(
+          //   `2363 >${new Date().getTime()} > visualViewportOffsetLeft`,
+          //   visualViewportOffsetLeft
+          // );
+          // console.log(
+          //   `2363 >${new Date().getTime()} > visualViewportOffsetTop`,
+          //   visualViewportOffsetTop
+          // );
 
           openingProperties = {
             width: overlayWidth + modalOverlayOpeningPadding * 2,
