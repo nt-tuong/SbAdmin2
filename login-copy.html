@@ -198,6 +198,8 @@
       const MAX_LINES = 25;
       const logBuffer = [];
 
+      const isIOS = window.visualViewport && /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
       console.log = function (...args) {
         originalLog.apply(console, args);
 
@@ -265,7 +267,7 @@
         // Android: visualViewport ≈ layout viewport
         let w, h;
         
-        if (window.visualViewport) {
+        if (isIOS) {
           const vp = window.visualViewport;
           // Dùng layout viewport (document.documentElement) để cover toàn màn hình
           // Visual viewport chỉ là phần người dùng nhìn thấy khi zoom
@@ -496,7 +498,7 @@
           // ✅ Sửa: Điều chỉnh tọa độ từ visual viewport sang layout viewport (iOS)
           // getBoundingClientRect() trả về tọa độ trong visual viewport
           // Nhưng overlay SVG dùng fixed position nên cần tọa độ trong layout viewport
-          if (window.visualViewport) {
+          if (isIOS) {
             // Chuyển đổi tọa độ: visual viewport → layout viewport
             overlayX = x + visualViewportOffsetLeft;
             overlayY = y + visualViewportOffsetTop;
