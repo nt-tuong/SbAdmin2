@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+
+    <title>SB Admin 2 - Login</title>
+
+    <!-- Custom fonts for this template-->
+    <link
+      href="vendor/fontawesome-free/css/all.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+      rel="stylesheet"
+    />
+
+    <!-- Custom styles for this template-->
+    <link href="css/sb-admin-2.min.css" rel="stylesheet" />
+
+    <style>
+      .s7-modal-overlay-container {
+        top: -1px !important;
+        left: -1px !important;
+        position: fixed !important;
+        width: 101vw !important;
+        height: 101vh !important;
+        z-index: 10;
+        pointer-events: none !important;
+        /* opacity: 0.5; */
+        transition: all 0.3s ease-out, height 0ms 0.3s, opacity 0.3s 0ms;
+      }
+
+      .s7-modal-overlay-container > path {
+        fill: rgba(83, 85, 97, 0.6) !important;
+      }
+
+      @media screen and (max-width: 768px) {
+        .s7-modal-overlay-container > path {
+          fill: rgba(83, 85, 97, 0.4) !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="bg-gradient-primary">
+    <div class="container">
+      <!-- Outer Row -->
+      <div class="row justify-content-center">
+        <div class="col-xl-10 col-lg-12 col-md-9">
+          <div class="card o-hidden border-0 shadow-lg my-5">
+            <div class="card-body p-0">
+              <!-- Nested Row within Card Body -->
+              <div class="row">
+                <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+                <div class="col-lg-6">
+                  <div class="p-5">
+                    <div class="text-center">
+                      <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
+                    </div>
+                    <div class="text-center">
+                      <h1 class="h4 text-gray-900 mb-4">Welcome Back2!</h1>
+                    </div>
+                    <div class="text-center">
+                      <h1 class="h4 text-gray-900 mb-4">Welcome Back3!</h1>
+                    </div>
+                    <div class="text-center">
+                      <h1 class="h4 text-gray-900 mb-4">Welcome Back4!</h1>
+                    </div>
+                    <div class="text-center">
+                      <h1 class="h4 text-gray-900 mb-4">Welcome Back5!</h1>
+                    </div>
+                    <div class="text-center">
+                      <h1 class="h4 text-gray-900 mb-4">Welcome Back6!</h1>
+                    </div>
+                    <form class="user">
+                      <div class="form-group">
+                        <input
+                          type="email"
+                          class="form-control form-control-user"
+                          id="exampleInputEmail"
+                          aria-describedby="emailHelp"
+                          placeholder="Enter Email Address..."
+                        />
+                      </div>
+                      <div class="form-group">
+                        <input
+                          type="password"
+                          class="form-control form-control-user"
+                          id="exampleInputPassword"
+                          placeholder="Password"
+                        />
+                      </div>
+                      <div class="form-group">
+                        <div class="custom-control custom-checkbox small">
+                          <input
+                            type="checkbox"
+                            class="custom-control-input"
+                            id="customCheck"
+                          />
+                          <label class="custom-control-label" for="customCheck"
+                            >Remember Me</label
+                          >
+                        </div>
+                      </div>
+                      <button
+                        type="submit"
+                        class="btn btn-primary btn-user btn-block"
+                        id="loginBtn"
+                      >
+                        Submit
+                      </button>
+                      <hr />
+                      <a
+                        href="index.html"
+                        class="btn btn-google btn-user btn-block"
+                      >
+                        <i class="fab fa-google fa-fw"></i> Login with Google
+                      </a>
+                      <a
+                        href="index.html"
+                        class="btn btn-facebook btn-user btn-block"
+                      >
+                        <i class="fab fa-facebook-f fa-fw"></i> Login with
+                        Facebook
+                      </a>
+                    </form>
+                    <hr />
+                    <div class="text-center">
+                      <a class="small" href="forgot-password.html"
+                        >Forgot Password?</a
+                      >
+                    </div>
+                    <div class="text-center">
+                      <a class="small" href="register.html"
+                        >Create an Account!</a
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin-2.min.js"></script>
+
+    <!-- test-shepherd scripts-->
+    <!-- <script src="js/test-shepherd.js"></script> -->
+
+    <!-- import script snippet -->
+    <script type="module" src="js/javascript.js"></script>
+
+    <script>
+      const AUTO_SCROLL_STYLE = ["auto", "scroll"];
+
+      // Tạo div để hiển thị log
+      const logDiv = document.createElement("div");
+      logDiv.id = "mobile-log";
+      logDiv.style.cssText = `
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          max-height: 200px;
+          overflow-y: auto;
+          background: rgba(0,0,0,0.9);
+          color: #0f0;
+          font-family: monospace;
+          font-size: 12px;
+          padding: 10px;
+          z-index: 999999;
+          white-space: pre-wrap;
+          word-break: break-all;
+        `;
+      document.body.appendChild(logDiv);
+
+      // Override console.log
+      const originalLog = console.log;
+      const MAX_LINES = 25;
+      const logBuffer = [];
+
+      console.log = function (...args) {
+        originalLog.apply(console, args);
+
+        const text = args
+          .map((arg) =>
+            typeof arg === "object" ? JSON.stringify(arg, null, 2) : String(arg)
+          )
+          .join(" ");
+
+        // Only print console that contains "2363"
+        if (!text.includes("2363")) return;
+
+        // Push log mới
+        logBuffer.push(text);
+
+        // Nếu vượt quá 100 dòng → xóa dòng cũ nhất
+        if (logBuffer.length > MAX_LINES) {
+          logBuffer.shift(); // pop đầu
+        }
+
+        // Render lại logDiv
+        logDiv.innerHTML = logBuffer.join("<br>");
+        logDiv.scrollTop = logDiv.scrollHeight;
+      };
+
+      // Test với input của bạn
+      console.log("=== START LOGGING ===");
+
+      const positionModal = (
+        modalOverlayOpeningPadding,
+        modalOverlayOpeningRadius,
+        offsetLeft,
+        offsetTop,
+        scrollParent,
+        targetElement
+      ) => {
+        if (targetElement) {
+          const { y, height } = _getVisibleHeight(targetElement, scrollParent);
+          const { x, width, left, top } = targetElement.getBoundingClientRect();
+
+          let overlayHeight = height;
+          let overlayWidth = width;
+          let overlayY = y;
+          let overlayX = x;
+
+          // getBoundingClientRect is not consistent. Some browsers use x and y, while others use left and top
+          const openingProperties = {
+            width: overlayWidth + modalOverlayOpeningPadding * 2,
+            height: overlayHeight + modalOverlayOpeningPadding * 2,
+            x: (overlayX || left) + offsetLeft - modalOverlayOpeningPadding,
+            y: (overlayY || top) + offsetTop - modalOverlayOpeningPadding,
+            r: modalOverlayOpeningRadius,
+          };
+
+          return openingProperties;
+        }
+      };
+
+      const makeOverlayPath = (
+        path,
+        { width = 0, height = 0, x = 0, y = 0, r = 0 }
+      ) => {
+        const w = window.innerWidth + 200;
+        const h = window.innerHeight + 200;
+
+        const {
+          topLeft = 0,
+          topRight = 0,
+          bottomRight = 0,
+          bottomLeft = 0,
+        } = typeof r === "number"
+          ? { topLeft: r, topRight: r, bottomRight: r, bottomLeft: r }
+          : r;
+
+        const d = `\
+        M${w},${h}\
+        H0\
+        V0\
+        H${w}\
+        V${h}\
+        Z\
+        M${x + topLeft},${y}\
+        a${topLeft},${topLeft},0,0,0-${topLeft},${topLeft}\
+        V${height + y - bottomLeft}\
+        a${bottomLeft},${bottomLeft},0,0,0,${bottomLeft},${bottomLeft}\
+        H${width + x - bottomRight}\
+        a${bottomRight},${bottomRight},0,0,0,${bottomRight}-${bottomRight}\
+        V${y + topRight}\
+        a${topRight},${topRight},0,0,0-${topRight}-${topRight}\
+        Z
+    `.replace(/\s/g, "");
+
+        const pViewport = w * h;
+        const pElement =
+          (width - topLeft - topRight) * (height - topRight - bottomRight);
+
+        const STROKE_DASHARRAY = 400;
+
+        const ratio = pElement / pViewport;
+        if (ratio > 1) {
+          const newValue = STROKE_DASHARRAY * Math.ceil(ratio);
+          path.style.strokeDasharray = `${newValue}%`;
+        } else {
+          path.style.strokeDasharray = `${STROKE_DASHARRAY}%`;
+        }
+
+        path.setAttribute("d", d);
+      };
+
+      function showOverlay(targetElement) {
+        const path = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "path"
+        );
+        path.style.fill = "transparent";
+        setTimeout(() => {
+          path.classList.add("show");
+        }, 100);
+        const elModalOverlay = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "svg"
+        );
+        elModalOverlay.classList.add("s7-modal-overlay-container");
+        elModalOverlay.id = "s7-guide-highlight";
+        elModalOverlay.appendChild(path);
+        document.body.appendChild(elModalOverlay);
+
+        let timeoutId = undefined;
+        const rafLoop = () => {
+          timeoutId = undefined;
+
+          const isElementInDOM = document.contains(targetElement);
+
+          if (!isElementInDOM) {
+            targetElement = getSelectedElement(true);
+          }
+
+          const iframeOffset = _getIframeOffset(targetElement);
+          const scrollParent = _getScrollParent(targetElement);
+
+          updatePosition(
+            5,
+            4,
+            iframeOffset.left,
+            iframeOffset.top,
+            scrollParent ?? null,
+            targetElement ?? null
+          );
+          makeOverlayPath(path, openingProperties);
+          // Chạy khoảng 1 lần/giây (1000ms delay)
+          timeoutId = setTimeout(rafLoop, 1000);
+        };
+
+        rafLoop();
+      }
+
+      const _getIframeOffset = (element) => {
+        const offset = {
+          top: 0,
+          left: 0,
+        };
+
+        if (!element) {
+          return offset;
+        }
+
+        let targetWindow = element.ownerDocument.defaultView;
+
+        // Traverse through the parent windows (iframes) to accumulate offsets
+        while (targetWindow && targetWindow !== window.top) {
+          const targetIframe = targetWindow.frameElement;
+
+          if (targetIframe) {
+            const targetIframeRect = targetIframe.getBoundingClientRect();
+            // Accumulate the offset by adding the iframe position (rect) and scroll offsets
+            offset.top += targetIframeRect.top;
+            offset.left += targetIframeRect.left;
+          }
+
+          targetWindow = targetWindow.parent;
+        }
+
+        return offset;
+      };
+
+      const _getScrollParent = (element) => {
+        if (!element) {
+          return null;
+        }
+
+        const style = window.getComputedStyle(element);
+
+        // Check if element is scrollable
+        const isScrollableX = AUTO_SCROLL_STYLE.includes(style.overflowX);
+        const isScrollableY = AUTO_SCROLL_STYLE.includes(style.overflowY);
+        const isScrollable = isScrollableY || isScrollableX;
+
+        if (isScrollable && element.scrollHeight > element.clientHeight) {
+          return element;
+        }
+
+        // Recursively check parent elements
+        return _getScrollParent(element.parentElement);
+      };
+
+      const _getVisibleHeight = (element, scrollParent) => {
+        const elementRect = element.getBoundingClientRect();
+        const top = elementRect.top;
+        const bottom = elementRect.bottom;
+
+        if (scrollParent) {
+          const scrollRect = scrollParent.getBoundingClientRect();
+          const scrollTop = scrollRect.top;
+          const scrollBottom = scrollRect.bottom;
+
+          // Clamp the element's visible bounds to the scroll parent's bounds
+          const clampedTop = Math.max(top, scrollTop);
+          const clampedBottom = Math.min(bottom, scrollBottom);
+
+          return {
+            y: clampedTop,
+            height: Math.max(clampedBottom - clampedTop, 0),
+          };
+        }
+
+        return {
+          y: top,
+          height: Math.max(bottom - top, 0),
+        };
+      };
+
+      function updatePosition(
+        modalOverlayOpeningPadding = 0,
+        modalOverlayOpeningRadius = 0,
+        offsetLeft = 0,
+        offsetTop = 0,
+        scrollParent = null,
+        targetElement = null
+      ) {
+        if (targetElement) {
+          const { y, height } = _getVisibleHeight(targetElement, scrollParent);
+          const { x, width } = targetElement.getBoundingClientRect();
+          let overlayHeight = height;
+          let overlayWidth = width;
+          let overlayY = y;
+          let overlayX = x;
+          console.log(
+            `2363 >${new Date().getTime()} > X`,
+            JSON.stringify(overlayX)
+          );
+          const {
+            offsetLeft: visualViewportOffsetLeft = 0,
+            offsetTop: visualViewportOffsetTop = 0,
+            scale: visualViewportScale = 1,
+          } = window.visualViewport ?? {
+            offsetLeft: 0,
+            offsetTop: 0,
+            scale: 1,
+          };
+
+          // console.log(`2363 >${new Date().getTime()} > window.visualViewport`, window.visualViewport);
+          // console.log(`2363 >${new Date().getTime()} > visualViewportOffsetLeft`, visualViewportOffsetLeft);
+          // console.log(`2363 >${new Date().getTime()} > visualViewportOffsetTop`, visualViewportOffsetTop);
+          console.log(
+            `2363 >${new Date().getTime()} > visualViewportScale`,
+            visualViewportScale
+          );
+          console.log(
+            `2363 >${new Date().getTime()} > overlayX / visualViewportScale`,
+            overlayX / visualViewportScale
+          );
+
+          openingProperties = {
+            width: overlayWidth + modalOverlayOpeningPadding * 2,
+            height: overlayHeight + modalOverlayOpeningPadding * 2,
+            x: overlayX + offsetLeft - modalOverlayOpeningPadding,
+            y: overlayY + offsetTop - modalOverlayOpeningPadding,
+            r: modalOverlayOpeningRadius,
+          };
+        }
+      }
+
+      const input = document.getElementById("exampleInputEmail");
+      showOverlay(input);
+    </script>
+
+    <!-- <script type="module" src="https://cdn.jsdelivr.net/gh/nt-tuong/COUIX@main/javascript.js"></script> -->
+  </body>
+</html>
