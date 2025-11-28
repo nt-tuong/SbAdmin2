@@ -260,8 +260,26 @@
         path,
         { width = 0, height = 0, x = 0, y = 0, r = 0 }
       ) => {
-        const w = window.innerWidth + 200;
-        const h = window.innerHeight + 200;
+        // let w = window.innerWidth + 200;
+        // let h = window.innerHeight + 200;
+        let w = window.innerWidth;
+        let h = window.innerHeight;
+
+        if (/iPhone|iPad|iPod/i.test(navigator.userAgent)){
+          // lấy tầm nhìn thật của thiết
+          w = window.innerWidth;
+          h = window.innerHeight;
+        }
+
+        
+        console.log(
+          `2363 >${new Date().getTime()} > h`,
+          h
+        );
+        console.log(
+          `2363 >${new Date().getTime()} > w`,
+          w
+        );
 
         const {
           topLeft = 0,
@@ -273,22 +291,22 @@
           : r;
 
         const d = `\
-        M${w},${h}\
-        H0\
-        V0\
-        H${w}\
-        V${h}\
-        Z\
-        M${x + topLeft},${y}\
-        a${topLeft},${topLeft},0,0,0-${topLeft},${topLeft}\
-        V${height + y - bottomLeft}\
-        a${bottomLeft},${bottomLeft},0,0,0,${bottomLeft},${bottomLeft}\
-        H${width + x - bottomRight}\
-        a${bottomRight},${bottomRight},0,0,0,${bottomRight}-${bottomRight}\
-        V${y + topRight}\
-        a${topRight},${topRight},0,0,0-${topRight}-${topRight}\
-        Z
-    `.replace(/\s/g, "");
+            M${w},${h}\
+            H0\
+            V0\
+            H${w}\
+            V${h}\
+            Z\
+            M${x + topLeft},${y}\
+            a${topLeft},${topLeft},0,0,0-${topLeft},${topLeft}\
+            V${height + y - bottomLeft}\
+            a${bottomLeft},${bottomLeft},0,0,0,${bottomLeft},${bottomLeft}\
+            H${width + x - bottomRight}\
+            a${bottomRight},${bottomRight},0,0,0,${bottomRight}-${bottomRight}\
+            V${y + topRight}\
+            a${topRight},${topRight},0,0,0-${topRight}-${topRight}\
+            Z
+        `.replace(/\s/g, "");
 
         const pViewport = w * h;
         const pElement =
@@ -461,10 +479,10 @@
           // console.log(`2363 >${new Date().getTime()} > window.visualViewport`, window.visualViewport);
           // console.log(`2363 >${new Date().getTime()} > visualViewportOffsetLeft`, visualViewportOffsetLeft);
           // console.log(`2363 >${new Date().getTime()} > visualViewportOffsetTop`, visualViewportOffsetTop);
-          console.log(
-            `2363 >${new Date().getTime()} > overlayWidth`,
-            overlayWidth
-          );
+          // console.log(
+          //   `2363 >${new Date().getTime()} > overlayWidth`,
+          //   overlayWidth
+          // );
           // console.log(
           //   `2363 >${new Date().getTime()} > visualViewportScale`,
           //   visualViewportScale
