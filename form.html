@@ -197,12 +197,34 @@
           padding-left: 0.15rem;
           padding-right: 0.15rem;
         }
+        
+        .s7-modal-overlay-container {
+          top: -1px !important;
+          left: -1px !important;
+          position: fixed !important;
+          width: 101vw !important;
+          height: 101vh !important;
+          z-index: 10;
+          pointer-events: none !important;
+          /* opacity: 0.5; */
+          transition: all 0.3s ease-out, height 0ms 0.3s, opacity 0.3s 0ms;
+        }
+
+        .s7-modal-overlay-container > path {
+          fill: rgba(83, 85, 97, 0.6) !important;
+        }
+
+        @media screen and (max-width: 768px) {
+          .s7-modal-overlay-container > path {
+            fill: rgba(83, 85, 97, 0.4) !important;
+          }
+        }
       }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
     <script>
       eruda.init();
-    </script>
+    </script> -->
   </head>
 
   <body id="page-top">
@@ -739,7 +761,7 @@
                     <form>
                       <div class="form-row mb-3">
                         <div class="col-12">
-                          <div class="row" style="padding: 5px">
+                          <div id="row-container" class="row" style="padding: 5px">
                             <div class="col-6">
                               <input
                                 type="text"
@@ -1216,9 +1238,11 @@
     <script src="js/sb-admin-2.min.js"></script>
 
     <!-- import script snippet -->
-    <script type="module" src="js/javascript.js"></script>
+    <!-- <script type="module" src="js/javascript.js"></script> -->
 
     <script>
+      const AUTO_SCROLL_STYLE = ["auto", "scroll"];
+
       // Tạo div để hiển thị log
       const logDiv = document.createElement("div");
       logDiv.id = "mobile-log";
@@ -1242,8 +1266,11 @@
 
       // Override console.log
       const originalLog = console.log;
-      const MAX_LINES = 100;
+      const MAX_LINES = 25;
       const logBuffer = [];
+
+      const isIOS =
+        window.visualViewport && /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
       console.log = function (...args) {
         originalLog.apply(console, args);
@@ -1272,6 +1299,311 @@
 
       // Test với input của bạn
       console.log("=== START LOGGING ===");
+
+      const positionModal = (
+        modalOverlayOpeningPadding,
+        modalOverlayOpeningRadius,
+        offsetLeft,
+        offsetTop,
+        scrollParent,
+        targetElement
+      ) => {
+        if (targetElement) {
+          const { y, height } = _getVisibleHeight(targetElement, scrollParent);
+          const { x, width, left, top } = targetElement.getBoundingClientRect();
+
+          let overlayHeight = height;
+          let overlayWidth = width;
+          let overlayY = y;
+          let overlayX = x;
+
+          // getBoundingClientRect is not consistent. Some browsers use x and y, while others use left and top
+          const openingProperties = {
+            width: overlayWidth + modalOverlayOpeningPadding * 2,
+            height: overlayHeight + modalOverlayOpeningPadding * 2,
+            x: (overlayX || left) + offsetLeft - modalOverlayOpeningPadding,
+            y: (overlayY || top) + offsetTop - modalOverlayOpeningPadding,
+            r: modalOverlayOpeningRadius,
+          };
+
+          return openingProperties;
+        }
+      };
+
+      const makeOverlayPath = (
+        path,
+        { width = 0, height = 0, x = 0, y = 0, r = 0 }
+      ) => {
+        // ✅ Sửa: Xử lý visualViewport cho iOS khi zoom
+        // iOS: visualViewport nhỏ hơn layout viewport khi zoom
+        // Android: visualViewport ≈ layout viewport
+        let w, h;
+
+        if (isIOS) {
+          const vp = window.visualViewport;
+          // Dùng layout viewport (document.documentElement) để cover toàn màn hình
+          // Visual viewport chỉ là phần người dùng nhìn thấy khi zoom
+          const layoutWidth =
+            document.documentElement.clientWidth || window.innerWidth;
+          const layoutHeight =
+            document.documentElement.clientHeight || window.innerHeight;
+
+          // Tính kích thước overlay để phủ cả layout viewport + buffer
+          w = layoutWidth + 200;
+          h = layoutHeight + 200;
+        } else {
+          // Fallback cho Android hoặc browser không hỗ trợ visualViewport
+          w = window.innerWidth + 200;
+          h = window.innerHeight + 200;
+        }
+
+        // console.log(
+        //   `2363 >${new Date().getTime()} > h`,
+        //   h
+        // );
+        // console.log(
+        //   `2363 >${new Date().getTime()} > w`,
+        //   w
+        // );
+        // console.log(
+        //   `2363 >${new Date().getTime()} > visualViewport`,
+        //   window.visualViewport ? {
+        //     width: window.visualViewport.width,
+        //     height: window.visualViewport.height,
+        //     offsetLeft: window.visualViewport.offsetLeft,
+        //     offsetTop: window.visualViewport.offsetTop,
+        //     scale: window.visualViewport.scale
+        //   } : 'not supported'
+        // );
+
+        const {
+          topLeft = 0,
+          topRight = 0,
+          bottomRight = 0,
+          bottomLeft = 0,
+        } = typeof r === "number"
+          ? { topLeft: r, topRight: r, bottomRight: r, bottomLeft: r }
+          : r;
+
+        const d = `\
+            M${w},${h}\
+            H0\
+            V0\
+            H${w}\
+            V${h}\
+            Z\
+            M${x + topLeft},${y}\
+            a${topLeft},${topLeft},0,0,0-${topLeft},${topLeft}\
+            V${height + y - bottomLeft}\
+            a${bottomLeft},${bottomLeft},0,0,0,${bottomLeft},${bottomLeft}\
+            H${width + x - bottomRight}\
+            a${bottomRight},${bottomRight},0,0,0,${bottomRight}-${bottomRight}\
+            V${y + topRight}\
+            a${topRight},${topRight},0,0,0-${topRight}-${topRight}\
+            Z
+        `.replace(/\s/g, "");
+
+        const pViewport = w * h;
+        const pElement =
+          (width - topLeft - topRight) * (height - topRight - bottomRight);
+
+        const STROKE_DASHARRAY = 400;
+
+        const ratio = pElement / pViewport;
+        if (ratio > 1) {
+          const newValue = STROKE_DASHARRAY * Math.ceil(ratio);
+          path.style.strokeDasharray = `${newValue}%`;
+        } else {
+          path.style.strokeDasharray = `${STROKE_DASHARRAY}%`;
+        }
+
+        path.setAttribute("d", d);
+      };
+
+      function showOverlay(targetElement) {
+        const path = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "path"
+        );
+        path.style.fill = "transparent";
+        setTimeout(() => {
+          path.classList.add("show");
+        }, 100);
+        const elModalOverlay = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "svg"
+        );
+        elModalOverlay.classList.add("s7-modal-overlay-container");
+        elModalOverlay.id = "s7-guide-highlight";
+        elModalOverlay.appendChild(path);
+        document.body.appendChild(elModalOverlay);
+
+        let timeoutId = undefined;
+        const rafLoop = () => {
+          // timeoutId = undefined;
+
+          const isElementInDOM = document.contains(targetElement);
+
+          if (!isElementInDOM) {
+            targetElement = getSelectedElement(true);
+          }
+
+          const iframeOffset = _getIframeOffset(targetElement);
+          const scrollParent = _getScrollParent(targetElement);
+
+          updatePosition(
+            5,
+            4,
+            iframeOffset.left,
+            iframeOffset.top,
+            scrollParent ?? null,
+            targetElement ?? null
+          );
+          makeOverlayPath(path, openingProperties);
+          // Chạy khoảng 1.5 giây/lần (1500ms delay)
+          // timeoutId = setTimeout(rafLoop, 1500);
+          rafId = requestAnimationFrame(rafLoop);
+        };
+
+        rafLoop();
+      }
+
+      const _getIframeOffset = (element) => {
+        const offset = {
+          top: 0,
+          left: 0,
+        };
+
+        if (!element) {
+          return offset;
+        }
+
+        let targetWindow = element.ownerDocument.defaultView;
+
+        // Traverse through the parent windows (iframes) to accumulate offsets
+        while (targetWindow && targetWindow !== window.top) {
+          const targetIframe = targetWindow.frameElement;
+
+          if (targetIframe) {
+            const targetIframeRect = targetIframe.getBoundingClientRect();
+            // Accumulate the offset by adding the iframe position (rect) and scroll offsets
+            offset.top += targetIframeRect.top;
+            offset.left += targetIframeRect.left;
+          }
+
+          targetWindow = targetWindow.parent;
+        }
+
+        return offset;
+      };
+
+      const _getScrollParent = (element) => {
+        if (!element) {
+          return null;
+        }
+
+        const style = window.getComputedStyle(element);
+
+        // Check if element is scrollable
+        const isScrollableX = AUTO_SCROLL_STYLE.includes(style.overflowX);
+        const isScrollableY = AUTO_SCROLL_STYLE.includes(style.overflowY);
+        const isScrollable = isScrollableY || isScrollableX;
+
+        if (isScrollable && element.scrollHeight > element.clientHeight) {
+          return element;
+        }
+
+        // Recursively check parent elements
+        return _getScrollParent(element.parentElement);
+      };
+
+      const _getVisibleHeight = (element, scrollParent) => {
+        const elementRect = element.getBoundingClientRect();
+        const top = elementRect.top;
+        const bottom = elementRect.bottom;
+
+        if (scrollParent) {
+          const scrollRect = scrollParent.getBoundingClientRect();
+          const scrollTop = scrollRect.top;
+          const scrollBottom = scrollRect.bottom;
+
+          // Clamp the element's visible bounds to the scroll parent's bounds
+          const clampedTop = Math.max(top, scrollTop);
+          const clampedBottom = Math.min(bottom, scrollBottom);
+
+          return {
+            y: clampedTop,
+            height: Math.max(clampedBottom - clampedTop, 0),
+          };
+        }
+
+        return {
+          y: top,
+          height: Math.max(bottom - top, 0),
+        };
+      };
+
+      function updatePosition(
+        modalOverlayOpeningPadding = 0,
+        modalOverlayOpeningRadius = 0,
+        offsetLeft = 0,
+        offsetTop = 0,
+        scrollParent = null,
+        targetElement = null
+      ) {
+        if (targetElement) {
+          const { y, height } = _getVisibleHeight(targetElement, scrollParent);
+          const { x, width } = targetElement.getBoundingClientRect();
+          let overlayHeight = height;
+          let overlayWidth = width;
+          let overlayY = y;
+          let overlayX = x;
+
+          const {
+            offsetLeft: visualViewportOffsetLeft = 0,
+            offsetTop: visualViewportOffsetTop = 0,
+            scale: visualViewportScale = 1,
+          } = window.visualViewport ?? {
+            offsetLeft: 0,
+            offsetTop: 0,
+            scale: 1,
+          };
+
+          // ✅ Sửa: Điều chỉnh tọa độ từ visual viewport sang layout viewport (iOS)
+          // getBoundingClientRect() trả về tọa độ trong visual viewport
+          // Nhưng overlay SVG dùng fixed position nên cần tọa độ trong layout viewport
+          if (isIOS) {
+            // Chuyển đổi tọa độ: visual viewport → layout viewport
+            overlayX = x + visualViewportOffsetLeft;
+            overlayY = y + visualViewportOffsetTop;
+          }
+          // Android: visualViewport không có hoặc offset = 0, nên không cần điều chỉnh
+
+          console.log(
+            `2363 >${new Date().getTime()} > overlayX (after adjustment)`,
+            overlayX
+          );
+          console.log(
+            `2363 >${new Date().getTime()} > visualViewportOffsetLeft`,
+            visualViewportOffsetLeft
+          );
+          console.log(
+            `2363 >${new Date().getTime()} > visualViewportOffsetTop`,
+            visualViewportOffsetTop
+          );
+
+          openingProperties = {
+            width: overlayWidth + modalOverlayOpeningPadding * 2,
+            height: overlayHeight + modalOverlayOpeningPadding * 2,
+            x: overlayX + offsetLeft - modalOverlayOpeningPadding,
+            y: overlayY + offsetTop - modalOverlayOpeningPadding,
+            r: modalOverlayOpeningRadius,
+          };
+        }
+      }
+
+      const input = document.getElementById("row-container");
+      showOverlay(input);
     </script>
   </body>
 </html>

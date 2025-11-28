@@ -365,10 +365,35 @@
         elModalOverlay.appendChild(path);
         document.body.appendChild(elModalOverlay);
 
-        let timeoutId = undefined;
+        let rafId = undefined;
+        let lastVpSnapshot = null; // Cache snapshot để so sánh
+        
+        // ✅ Sửa: Lắng nghe scroll events để đảm bảo visualViewport được cập nhật sau scroll
+        // Vấn đề: scrollIntoView() trigger scroll nhưng visualViewport chưa kịp update ngay
+        const handleScroll = () => {
+          // Force update sau khi scroll - đợi 2 frames để visualViewport kịp cập nhật
+          if (rafId) {
+            cancelAnimationFrame(rafId);
+          }
+          // Đợi 2 frames để đảm bảo visualViewport đã cập nhật
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              rafLoop();
+            });
+          });
+        };
+        
+        // Lắng nghe scroll events
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        document.addEventListener('scroll', handleScroll, { passive: true });
+        
+        // Lắng nghe visualViewport scroll/resize events (quan trọng cho iOS)
+        if (window.visualViewport) {
+          window.visualViewport.addEventListener('scroll', handleScroll, { passive: true });
+          window.visualViewport.addEventListener('resize', handleScroll, { passive: true });
+        }
+        
         const rafLoop = () => {
-          // timeoutId = undefined;
-
           const isElementInDOM = document.contains(targetElement);
 
           if (!isElementInDOM) {
@@ -378,17 +403,31 @@
           const iframeOffset = _getIframeOffset(targetElement);
           const scrollParent = _getScrollParent(targetElement);
 
+          // ✅ Sửa: Đọc visualViewport snapshot TRƯỚC getBoundingClientRect()
+          // Đảm bảo cả hai được đọc trong cùng 1 frame, sau khi scroll đã hoàn tất
+          const vp = window.visualViewport;
+          const vpSnapshot = vp ? {
+            offsetLeft: vp.offsetLeft,
+            offsetTop: vp.offsetTop,
+            scale: vp.scale,
+            width: vp.width,
+            height: vp.height
+          } : null;
+          
+          // Cache snapshot để debug
+          lastVpSnapshot = vpSnapshot;
+
           updatePosition(
             5,
             4,
             iframeOffset.left,
             iframeOffset.top,
             scrollParent ?? null,
-            targetElement ?? null
+            targetElement ?? null,
+            vpSnapshot // Truyền snapshot để đảm bảo đồng bộ
           );
           makeOverlayPath(path, openingProperties);
-          // Chạy khoảng 1.5 giây/lần (1500ms delay)
-          // timeoutId = setTimeout(rafLoop, 1500);
+          
           rafId = requestAnimationFrame(rafLoop);
         };
 
@@ -476,31 +515,42 @@
         offsetLeft = 0,
         offsetTop = 0,
         scrollParent = null,
-        targetElement = null
+        targetElement = null,
+        vpSnapshot = null // ✅ Sửa: Nhận snapshot để đảm bảo đồng bộ sau scroll
       ) {
         if (targetElement) {
+          // ✅ Sửa: Đọc snapshot TRƯỚC getBoundingClientRect() để đảm bảo đồng bộ
+          // Quan trọng: Sau scrollIntoView(), visualViewport cần thời gian để cập nhật
+          // Snapshot đảm bảo chúng ta dùng cùng một giá trị visualViewport với getBoundingClientRect()
+          const {
+            offsetLeft: visualViewportOffsetLeft = 0,
+            offsetTop: visualViewportOffsetTop = 0,
+            scale: visualViewportScale = 1,
+          } = vpSnapshot ?? window.visualViewport ?? {
+            offsetLeft: 0,
+            offsetTop: 0,
+            scale: 1,
+          };
+          
+          // ✅ Đọc getBoundingClientRect() ngay sau snapshot để đảm bảo đồng bộ
+          // Cả hai được đọc trong cùng 1 frame, sau khi scroll đã hoàn tất
           const { y, height } = _getVisibleHeight(targetElement, scrollParent);
           const { x, width } = targetElement.getBoundingClientRect();
           let overlayHeight = height;
           let overlayWidth = width;
           let overlayY = y;
           let overlayX = x;
-          
-          const {
-            offsetLeft: visualViewportOffsetLeft = 0,
-            offsetTop: visualViewportOffsetTop = 0,
-            scale: visualViewportScale = 1,
-          } = window.visualViewport ?? {
-            offsetLeft: 0,
-            offsetTop: 0,
-            scale: 1,
-          };
 
           // ✅ Sửa: Điều chỉnh tọa độ từ visual viewport sang layout viewport (iOS)
           // getBoundingClientRect() trả về tọa độ trong visual viewport
           // Nhưng overlay SVG dùng fixed position nên cần tọa độ trong layout viewport
-          if (isIOS) {
+          if (isIOS && vpSnapshot) {
             // Chuyển đổi tọa độ: visual viewport → layout viewport
+            // Sử dụng snapshot để đảm bảo đồng bộ với getBoundingClientRect()
+            overlayX = x + visualViewportOffsetLeft;
+            overlayY = y + visualViewportOffsetTop;
+          } else if (isIOS) {
+            // Fallback nếu không có snapshot
             overlayX = x + visualViewportOffsetLeft;
             overlayY = y + visualViewportOffsetTop;
           }
