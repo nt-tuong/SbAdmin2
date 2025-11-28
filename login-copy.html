@@ -260,15 +260,25 @@
         path,
         { width = 0, height = 0, x = 0, y = 0, r = 0 }
       ) => {
-        // let w = window.innerWidth + 200;
-        // let h = window.innerHeight + 200;
-        let w = window.innerWidth;
-        let h = window.innerHeight;
-
-        if (/iPhone|iPad|iPod/i.test(navigator.userAgent)){
-          // lấy tầm nhìn thật của thiết
-          w = window.innerWidth;
-          h = window.innerHeight;
+        // ✅ Sửa: Xử lý visualViewport cho iOS khi zoom
+        // iOS: visualViewport nhỏ hơn layout viewport khi zoom
+        // Android: visualViewport ≈ layout viewport
+        let w, h;
+        
+        if (window.visualViewport) {
+          const vp = window.visualViewport;
+          // Dùng layout viewport (document.documentElement) để cover toàn màn hình
+          // Visual viewport chỉ là phần người dùng nhìn thấy khi zoom
+          const layoutWidth = document.documentElement.clientWidth || window.innerWidth;
+          const layoutHeight = document.documentElement.clientHeight || window.innerHeight;
+          
+          // Tính kích thước overlay để phủ cả layout viewport + buffer
+          w = layoutWidth + 200;
+          h = layoutHeight + 200;
+        } else {
+          // Fallback cho Android hoặc browser không hỗ trợ visualViewport
+          w = window.innerWidth + 200;
+          h = window.innerHeight + 200;
         }
 
         
@@ -279,6 +289,16 @@
         console.log(
           `2363 >${new Date().getTime()} > w`,
           w
+        );
+        console.log(
+          `2363 >${new Date().getTime()} > visualViewport`,
+          window.visualViewport ? {
+            width: window.visualViewport.width,
+            height: window.visualViewport.height,
+            offsetLeft: window.visualViewport.offsetLeft,
+            offsetTop: window.visualViewport.offsetTop,
+            scale: window.visualViewport.scale
+          } : 'not supported'
         );
 
         const {
@@ -462,10 +482,7 @@
           let overlayWidth = width;
           let overlayY = y;
           let overlayX = x;
-          console.log(
-            `2363 >${new Date().getTime()} > X`,
-            JSON.stringify(overlayX)
-          );
+          
           const {
             offsetLeft: visualViewportOffsetLeft = 0,
             offsetTop: visualViewportOffsetTop = 0,
@@ -476,29 +493,28 @@
             scale: 1,
           };
 
-          // console.log(`2363 >${new Date().getTime()} > window.visualViewport`, window.visualViewport);
-          // console.log(`2363 >${new Date().getTime()} > visualViewportOffsetLeft`, visualViewportOffsetLeft);
-          // console.log(`2363 >${new Date().getTime()} > visualViewportOffsetTop`, visualViewportOffsetTop);
-          // console.log(
-          //   `2363 >${new Date().getTime()} > overlayWidth`,
-          //   overlayWidth
-          // );
-          // console.log(
-          //   `2363 >${new Date().getTime()} > visualViewportScale`,
-          //   visualViewportScale
-          // );
-          // console.log(
-          //   `2363 >${new Date().getTime()} > overlayX / visualViewportScale`,
-          //   overlayX / visualViewportScale
-          // );
-          // console.log(
-          //   `2363 >${new Date().getTime()} > visualViewportOffsetLeft`,
-          //   visualViewportOffsetLeft
-          // );
-          // console.log(
-          //   `2363 >${new Date().getTime()} > visualViewportOffsetTop`,
-          //   visualViewportOffsetTop
-          // );
+          // ✅ Sửa: Điều chỉnh tọa độ từ visual viewport sang layout viewport (iOS)
+          // getBoundingClientRect() trả về tọa độ trong visual viewport
+          // Nhưng overlay SVG dùng fixed position nên cần tọa độ trong layout viewport
+          if (window.visualViewport) {
+            // Chuyển đổi tọa độ: visual viewport → layout viewport
+            overlayX = x + visualViewportOffsetLeft;
+            overlayY = y + visualViewportOffsetTop;
+          }
+          // Android: visualViewport không có hoặc offset = 0, nên không cần điều chỉnh
+
+          console.log(
+            `2363 >${new Date().getTime()} > overlayX (after adjustment)`,
+            overlayX
+          );
+          console.log(
+            `2363 >${new Date().getTime()} > visualViewportOffsetLeft`,
+            visualViewportOffsetLeft
+          );
+          console.log(
+            `2363 >${new Date().getTime()} > visualViewportOffsetTop`,
+            visualViewportOffsetTop
+          );
 
           openingProperties = {
             width: overlayWidth + modalOverlayOpeningPadding * 2,
