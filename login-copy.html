@@ -347,8 +347,8 @@
             targetElement ?? null
           );
           makeOverlayPath(path, openingProperties);
-          // Chạy khoảng 1 lần/giây (1000ms delay)
-          timeoutId = setTimeout(rafLoop, 1000);
+          // Chạy khoảng 1.5 giây/lần (1500ms delay)
+          timeoutId = setTimeout(rafLoop, 1500);
         };
 
         rafLoop();
