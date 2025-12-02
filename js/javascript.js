@@ -21434,6 +21434,73 @@ window.s7_data = {
 			"total": 245,
 			"result": [
 			{
+    "id": 904,
+    "group_info_ids": [],
+    "link_guide": [],
+    "element": {
+        "element_id": 5526,
+        "element_type": "div",
+        "guide_image_info": "",
+        "position_path": "/html[1]/body[1]/div[1]/div[1]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]",
+        "element_details": [
+            {
+                "element_detail_id": 30453,
+                "element_id": 5526,
+                "element_property_config": "attribute",
+                "value": "tagName = div"
+            },
+            {
+                "element_detail_id": 30454,
+                "element_id": 5526,
+                "element_property_config": "attribute",
+                "value": "class = card-header py-3 d-flex flex-row align-items-center justify-content-between"
+            },
+            {
+                "element_detail_id": 30455,
+                "element_id": 5526,
+                "element_property_config": "innerText",
+                "value": "innerText = Earnings Overview"
+            },
+            {
+                "element_detail_id": 30456,
+                "element_id": 5526,
+                "element_property_config": "text",
+                "value": "text = \n                                    Earnings Overview\n                                    \n                                        \n                                            \n                                        \n                                        \n                                            Dropdown Header:\n                                            Action\n                                            Another action\n                                            \n                                            Something else here\n                                        \n                                    \n                                "
+            }
+        ]
+    },
+    "note_page_name": "SB Admin 2 - Dashboard",
+    "note_page_url": "https://sb-admin2-ten.vercel.app/",
+    "content": "<p><span>Test&nbsp;image</span><br></p>",
+    "is_public": 2,
+    "view_scope_flag": 0,
+    "note_icon_type": 1,
+    "note_icon_color_type": 7,
+    "note_icon_size": 30,
+    "note_icon_position": 1,
+    "note_icon_position_tb": 0,
+    "note_icon_position_lr": 0,
+    "type": 1,
+    "is_owner": true,
+    "image_assets_masters": [
+        {
+            "id": 231,
+            "s3_url": "https://s7-test-upload-file.s3.us-east-1.amazonaws.com/3.114.62.26/guide/guide_detail_22/image_29047625efcc081308b4c2d93a350903.png",
+            "mime_type": "image/png",
+            "file_size": 8990,
+            "s3_url_preview": "https://s7-test-upload-file.s3.us-east-1.amazonaws.com/3.114.62.26/guide/guide_detail_22/image_29047625efcc081308b4c2d93a350903.png"
+        },
+        {
+            "id": 232,
+            "s3_url": "https://s7-test-upload-file.s3.us-east-1.amazonaws.com/3.114.62.26/guide/guide_detail_22/image_29047625efcc081308b4c2d93a350903.png",
+            "mime_type": "image/jpeg",
+            "file_size": 129911,
+            "s3_url_preview": "https://s7-test-upload-file.s3.us-east-1.amazonaws.com/3.114.62.26/guide/guide_detail_22/image_29047625efcc081308b4c2d93a350903.png"
+        }
+    ],
+    "note_title": "Test image"
+},
+			{
     "id": 891,
     "group_info_ids": [],
     "link_guide": [
