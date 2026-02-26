@@ -34,6 +34,10 @@
 
     <!-- Custom CSS for mobile responsiveness -->
     <style>
+
+      #row-container{
+        border: 1px solid #000;
+      }
       /* Mobile adjustments for forms */
       @media (max-width: 768px) {
         /* Form container spacing */
@@ -197,27 +201,27 @@
           padding-left: 0.15rem;
           padding-right: 0.15rem;
         }
+      }
         
-        .s7-modal-overlay-container {
-          top: -1px !important;
-          left: -1px !important;
-          position: fixed !important;
-          width: 101vw !important;
-          height: 101vh !important;
-          z-index: 10;
-          pointer-events: none !important;
-          /* opacity: 0.5; */
-          transition: all 0.3s ease-out, height 0ms 0.3s, opacity 0.3s 0ms;
-        }
+      .s7-modal-overlay-container {
+        top: -1px !important;
+        left: -1px !important;
+        position: fixed !important;
+        width: 101vw !important;
+        height: 101vh !important;
+        z-index: 10;
+        pointer-events: none !important;
+        /* opacity: 0.5; */
+        transition: all 0.3s ease-out, height 0ms 0.3s, opacity 0.3s 0ms;
+      }
 
+      .s7-modal-overlay-container > path {
+        fill: rgba(83, 85, 97, 0.6) !important;
+      }
+
+      @media screen and (max-width: 768px) {
         .s7-modal-overlay-container > path {
-          fill: rgba(83, 85, 97, 0.6) !important;
-        }
-
-        @media screen and (max-width: 768px) {
-          .s7-modal-overlay-container > path {
-            fill: rgba(83, 85, 97, 0.4) !important;
-          }
+          fill: rgba(145, 147, 156, 0.4) !important;
         }
       }
     </style>
@@ -1243,62 +1247,62 @@
     <script>
       const AUTO_SCROLL_STYLE = ["auto", "scroll"];
 
-      // Tạo div để hiển thị log
-      const logDiv = document.createElement("div");
-      logDiv.id = "mobile-log";
-      logDiv.style.cssText = `
-          position: fixed;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          max-height: 200px;
-          overflow-y: auto;
-          background: rgba(0,0,0,0.9);
-          color: #0f0;
-          font-family: monospace;
-          font-size: 12px;
-          padding: 10px;
-          z-index: 999999;
-          white-space: pre-wrap;
-          word-break: break-all;
-        `;
-      document.body.appendChild(logDiv);
+      // // Tạo div để hiển thị log
+      // const logDiv = document.createElement("div");
+      // logDiv.id = "mobile-log";
+      // logDiv.style.cssText = `
+      //     position: fixed;
+      //     bottom: 0;
+      //     left: 0;
+      //     right: 0;
+      //     max-height: 200px;
+      //     overflow-y: auto;
+      //     background: rgba(0,0,0,0.9);
+      //     color: #0f0;
+      //     font-family: monospace;
+      //     font-size: 12px;
+      //     padding: 10px;
+      //     z-index: 999999;
+      //     white-space: pre-wrap;
+      //     word-break: break-all;
+      //   `;
+      // document.body.appendChild(logDiv);
 
       // Override console.log
-      const originalLog = console.log;
+      // const originalLog = console.log;
       const MAX_LINES = 25;
       const logBuffer = [];
 
       const isIOS =
         window.visualViewport && /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-      console.log = function (...args) {
-        originalLog.apply(console, args);
+      // console.log = function (...args) {
+      //   originalLog.apply(console, args);
 
-        const text = args
-          .map((arg) =>
-            typeof arg === "object" ? JSON.stringify(arg, null, 2) : String(arg)
-          )
-          .join(" ");
+      //   const text = args
+      //     .map((arg) =>
+      //       typeof arg === "object" ? JSON.stringify(arg, null, 2) : String(arg)
+      //     )
+      //     .join(" ");
 
-        // Only print console that contains "2363"
-        if (!text.includes("2363")) return;
+      //   // Only print console that contains "2363"
+      //   if (!text.includes("2363")) return;
 
-        // Push log mới
-        logBuffer.push(text);
+      //   // Push log mới
+      //   logBuffer.push(text);
 
-        // Nếu vượt quá 100 dòng → xóa dòng cũ nhất
-        if (logBuffer.length > MAX_LINES) {
-          logBuffer.shift(); // pop đầu
-        }
+      //   // Nếu vượt quá 100 dòng → xóa dòng cũ nhất
+      //   if (logBuffer.length > MAX_LINES) {
+      //     logBuffer.shift(); // pop đầu
+      //   }
 
-        // Render lại logDiv
-        logDiv.innerHTML = logBuffer.join("<br>");
-        logDiv.scrollTop = logDiv.scrollHeight;
-      };
+      //   // Render lại logDiv
+      //   logDiv.innerHTML = logBuffer.join("<br>");
+      //   logDiv.scrollTop = logDiv.scrollHeight;
+      // };
 
-      // Test với input của bạn
-      console.log("=== START LOGGING ===");
+      // // Test với input của bạn
+      // console.log("=== START LOGGING ===");
 
       const positionModal = (
         modalOverlayOpeningPadding,
@@ -1357,25 +1361,6 @@
           h = window.innerHeight + 200;
         }
 
-        // console.log(
-        //   `2363 >${new Date().getTime()} > h`,
-        //   h
-        // );
-        // console.log(
-        //   `2363 >${new Date().getTime()} > w`,
-        //   w
-        // );
-        // console.log(
-        //   `2363 >${new Date().getTime()} > visualViewport`,
-        //   window.visualViewport ? {
-        //     width: window.visualViewport.width,
-        //     height: window.visualViewport.height,
-        //     offsetLeft: window.visualViewport.offsetLeft,
-        //     offsetTop: window.visualViewport.offsetTop,
-        //     scale: window.visualViewport.scale
-        //   } : 'not supported'
-        // );
-
         const {
           topLeft = 0,
           topRight = 0,
@@ -1385,6 +1370,15 @@
           ? { topLeft: r, topRight: r, bottomRight: r, bottomLeft: r }
           : r;
 
+          
+          // console.log("x", x);
+          // console.log("topLeft", topLeft);
+          // console.log("y", y);
+          // console.log("bottomLeft", bottomLeft);
+
+          // console.log("height", height);
+          // console.log("y", y);
+          // console.log("bottomLeft", bottomLeft);
         const d = `\
             M${w},${h}\
             H0\
@@ -1425,7 +1419,9 @@
           "http://www.w3.org/2000/svg",
           "path"
         );
-        path.style.fill = "transparent";
+        path.style.fill = "rgba(0, 0, 0, 0.5)";
+        path.style.stroke = "rgba(255, 0, 0, 0.8)";
+        path.style.strokeWidth = "1px";
         setTimeout(() => {
           path.classList.add("show");
         }, 100);
@@ -1452,13 +1448,14 @@
           const scrollParent = _getScrollParent(targetElement);
 
           updatePosition(
-            5,
-            4,
+            2,
+            12.94,
             iframeOffset.left,
             iframeOffset.top,
             scrollParent ?? null,
             targetElement ?? null
           );
+          // console.log("openingProperties", openingProperties);
           makeOverlayPath(path, openingProperties);
           // Chạy khoảng 1.5 giây/lần (1500ms delay)
           // timeoutId = setTimeout(rafLoop, 1500);
@@ -1579,22 +1576,22 @@
           }
           // Android: visualViewport không có hoặc offset = 0, nên không cần điều chỉnh
 
-          console.log(
-            `2363 >${new Date().getTime()} > overlayX (after adjustment)`,
-            overlayX
-          );
-          console.log(
-            `2363 >${new Date().getTime()} > visualViewportOffsetLeft`,
-            visualViewportOffsetLeft
-          );
-          console.log(
-            `2363 >${new Date().getTime()} > visualViewportOffsetTop`,
-            visualViewportOffsetTop
-          );
+          // console.log(
+          //   `2363 >${new Date().getTime()} > overlayX (after adjustment)`,
+          //   overlayX
+          // );
+          // console.log(
+          //   `2363 >${new Date().getTime()} > visualViewportOffsetLeft`,
+          //   visualViewportOffsetLeft
+          // );
+          // console.log(
+          //   `2363 >${new Date().getTime()} > visualViewportOffsetTop`,
+          //   visualViewportOffsetTop
+          // );
 
           openingProperties = {
-            width: overlayWidth + modalOverlayOpeningPadding * 2,
-            height: overlayHeight + modalOverlayOpeningPadding * 2,
+            width: overlayWidth + modalOverlayOpeningPadding * 2 + 2,
+            height: overlayHeight + modalOverlayOpeningPadding * 2 + 2,
             x: overlayX + offsetLeft - modalOverlayOpeningPadding,
             y: overlayY + offsetTop - modalOverlayOpeningPadding,
             r: modalOverlayOpeningRadius,
